@@ -21,7 +21,7 @@ SELECTION-SCREEN BEGIN OF BLOCK proxy WITH FRAME.
 PARAMETERS: p_proxy  TYPE string,
             p_pxport TYPE string,
             p_puser  TYPE string,
-            p_ppwd   TYPE string.
+            p_ppwd   TYPE text50.
 SELECTION-SCREEN END OF BLOCK proxy.
 
 START-OF-SELECTION.
@@ -35,7 +35,8 @@ FORM run USING iv_url TYPE swc_value.
         lv_url           TYPE string,
         li_client        TYPE REF TO if_http_client,
         lt_errors        TYPE TABLE OF string,
-        lv_error_message TYPE string.
+        lv_error_message TYPE string,
+        lv_ppwd          TYPE string.
 
   IF iv_url IS INITIAL.
     RETURN.
@@ -49,9 +50,12 @@ FORM run USING iv_url TYPE swc_value.
       proxy_host    = p_proxy
       proxy_service = p_pxport
     IMPORTING
-      client        = li_client ).
+      client        = li_client ).           
 
   IF NOT p_puser IS INITIAL.
+  
+    lv_ppwd = p_ppwd.
+  
     li_client->authenticate(
       proxy_authentication = abap_true
       username             = p_puser
